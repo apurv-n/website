@@ -1,29 +1,36 @@
 <?php
+  include "connection.php";
+  
+  session_start();
 
-// Check POST access 
-header("Access-Control-Allow-Methods: POST");
+  $regno = $_POST["regno"];
+  $passwd = $_POST["passwd"];
+  $regno = stripcslashes($regno);
+  $password = stripcslashes($passwd);
+  $regno = mysqli_real_escape_string($conn,$regno);
+  $password = mysqli_real_escape_string($conn,$password);
+  $_SESSION['var']=$regno;
 
-// Debugging 
-error_reporting(E_ALL);
-ini_set('display_errors', 1); 
+  $sql = "SELECT * FROM student WHERE reg_no='$regno' and passwd='$password';";
+  $result = mysqli_query($conn, $sql);
 
-// TEST POST access
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-  echo "POST received";
-  die;
-}
-else {
-  echo "ERROR: " . $_SERVER['REQUEST_METHOD'] . " request not allowed";
-  die; 
-}
+  if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    // echo "User";
+    // while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+    //   echo "regno: " . $regno. " - Password: " . $row["passwd"]. "Is Registered: " . $row["is_registered"] . "<br>";
+    // }
+    $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    // echo "regno: " . $regno. " - Password: " . $row["passwd"]. "Is Registered: " . $row["is_registered"] . "<br>";
 
-// Rest of code
-include "connection.php"; 
+    if($row["is_registered"] == 1){
+      include "/website/Code/HTML/dashboard.html";
+    }else{
+      include "/website/Code/HTML/Registration.html";
+    }
 
-session_start();
-
-// Get post data
-$regno = $_POST["regno"];  
-$passwd = $_POST["passwd"];
-
-// Process login logic...
+  } else {
+    echo "This is error from Sign in page";
+    include "/website/Code/HTML/dummyError.html";
+  }
+?>
