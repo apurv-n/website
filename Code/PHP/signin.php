@@ -1,25 +1,38 @@
 <?php
 
-session_start();
+// Allow POST method
+header("Access-Control-Allow-Methods: POST");  
 
-$hardcoded_regno = "1234";
-$hardcoded_passwd = "abcd";
+// Error reporting
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-$regno = $_POST["regno"];
-$passwd = $_POST["passwd"];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-if($regno === $hardcoded_regno && $passwd === $hardcoded_passwd) {
+    session_start();
 
-  // Valid credentials
-  $_SESSION['user_id'] = $hardcoded_regno;
-  $_SESSION['username'] = 'Hardcoded User';
-  
-  header('Location: /Website/Code/HTML/dashboard.html'); 
-  exit;
+    $hardcoded_regno = "1234";
+    $hardcoded_passwd = "abcd";
 
-} else {
+    $regno = $_POST["regno"];
+    $passwd = $_POST["passwd"];
 
-  // Invalid credentials
-  echo "Invalid username or password";
+    if($regno === $hardcoded_regno && $passwd === $hardcoded_passwd) {
+
+        $_SESSION['user_id'] = $hardcoded_regno;
+        $_SESSION['username'] = 'Hardcoded User';
+
+        // Use absolute URL for redirect
+        $url = "https://apurv-n.github.io//website/Code/HTML/dashboard.html"; 
+        header("Location: $url"); 
+        exit();
+
+    } else {  
+
+        echo "Invalid credentials";
+    
+    }
 
 }
+
+?>
